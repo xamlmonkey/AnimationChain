@@ -5,6 +5,7 @@
         var stepIndex = 0;
         var fireNextStep = false;
         var running = false;
+        var compatDelay = 1000;
 
         // Execute the next item in the chain
         var nextStep = function () {
@@ -23,6 +24,11 @@
                     nextStep();
                 }
             }, 0);
+        };
+
+        // Sets the delay used by browsers that doesn't support transitions
+        this.setCompatibilityDelay = function (delay) {
+            compatDelay = delay;
         };
 
 
@@ -89,6 +95,15 @@
 
 
         var bindTransitionEnd = function () {
+
+            if (!Modernizr.csstransitions) {
+                setTimeout(function () {
+                    nextStep();
+                }, compatDelay);
+
+                return;
+            }
+
             animationElement.on(transitionedEventName, function () {
                 animationElement.off(transitionedEventName);
                 nextStep();
@@ -103,7 +118,7 @@
                 el.setAttribute(eventName, 'return;');
                 isSupported = typeof el[eventName] == 'function';
             }
-            el.remove();
+            el = null;
             return isSupported ? "transitionend" : "webkitTransitionEnd";
         };
 
@@ -118,4 +133,3 @@
     $.animationChain = $.fn.animationChain;
 
 })(jQuery);
-
