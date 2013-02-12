@@ -20,9 +20,10 @@ var c2 = $("#div-one").animationChain()
             .addClass("color3")
             .addClass("color4");
             
-//Start both chains            
+//Start the chains with a 1 second delay between them.            
 $.animationChain()
   .execute(function () { c1.start(); })
+  .delay(1000)
   .execute(function () { c2.start(); })
   .start();
             
